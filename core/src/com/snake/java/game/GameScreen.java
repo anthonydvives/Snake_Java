@@ -81,8 +81,16 @@ public class GameScreen implements Screen {
     }
     public void spawnApple(){
         Random random = new Random();
-        random.nextInt();
-        apple = new Apple(100,100);
+        //System.out.println((eastBound - westBound + 1) + " " + westBound);
+        int appleX = random.nextInt(eastBound - westBound + 1) + westBound - 10;
+        int appleY = random.nextInt(northBound - southBound + 1) + southBound - 10;
+        appleX = ((appleX + 5) / 10) * 10;
+        appleY = ((appleY + 5) / 10) * 10;
+        System.out.println(appleX);
+        System.out.println(appleY);
+
+        //int appleY = random.nextInt(southBound) + (eastBound - westBound);
+        //apple = new Apple(100,100);
     }
     public void detectCollision(){
         // Check if Snake goes past play area
@@ -113,41 +121,17 @@ public class GameScreen implements Screen {
         game.batch.setProjectionMatrix(camera.combined);
 
         bfont = new BitmapFont(Gdx.files.internal("font.fnt"), Gdx.files.internal("font.png"), false);
-        System.out.println(mainmenu.width + " " + mainmenu.height);
+
         game.batch.begin();
         game.batch.draw(grid, (mainmenu.width / 2) - (550 / 2), (mainmenu.height / 2) - (410 / 2));
         bfont.draw(game.batch, "Score: " + Integer.toString(snake.size() - 1), 20 , 460);
         game.batch.end();
 
-        if(Gdx.input.isKeyPressed(com.badlogic.gdx.Input.Keys.V)) {
+        if(Gdx.input.isKeyPressed(com.badlogic.gdx.Input.Keys.V) && debug < 1) {
+            //System.out.println(debug);
             Snake body;
             debug++;
-            if(snake.getFirst().getDirection() == Direction.INITIAL){
-                body = new Snake(snake.getLast().getXPos(), snake.getLast().getYPos() - 10);
-                body.setDirection(snake.getLast().getDirection());
-                snake.add(body);
-            }
-            else if (snake.getFirst().getDirection() == Direction.UP) {
-                //System.out.println("Up");
-                body = new Snake(snake.getLast().getXPos(), snake.getLast().getYPos() - 10);
-                body.setDirection(snake.getLast().getDirection());
-                snake.add(body);
-            }
-            else if (snake.getFirst().getDirection() == Direction.DOWN) {
-                body = new Snake(snake.getLast().getXPos(), snake.getLast().getYPos() + 10);
-                body.setDirection(snake.getLast().getDirection());
-                snake.add(body);
-            }
-            else if (snake.getFirst().getDirection() == Direction.LEFT) {
-                body = new Snake(snake.getLast().getXPos() + 10, snake.getLast().getYPos());
-                body.setDirection(snake.getLast().getDirection());
-                snake.add(body);
-            }
-            else if (snake.getFirst().getDirection() == Direction.RIGHT) {
-                body = new Snake(snake.getLast().getXPos() - 10, snake.getLast().getYPos());
-                body.setDirection(snake.getLast().getDirection());
-                snake.add(body);
-            }
+            spawnApple();
         }
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
