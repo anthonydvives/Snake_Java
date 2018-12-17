@@ -19,22 +19,20 @@ public class GameOverScreen implements Screen {
     private ShapeRenderer shapeRenderer;
     // Game Variables
     private Texture gameover;
-    private BitmapFont bfont;
-    private int finalScore;
+    private boolean playDeathSound;
 
-    public GameOverScreen(final SnakeGame game, MainMenuScreen mainmenu, int finalScore){
+
+    public GameOverScreen(final SnakeGame game, MainMenuScreen mainmenu){
         this.game = game;
         // Implement pause to main menu
         this.mainmenu = mainmenu;
         // Create Camera
         camera = new OrthographicCamera(mainmenu.width, mainmenu.height);
         camera.position.set(mainmenu.width / 2, mainmenu.height / 2, 0);
-        // Save Score
-        this.finalScore = finalScore;
         // Initialize Graphics
         shapeRenderer = new ShapeRenderer();
         gameover = new Texture(Gdx.files.internal("game_over.png"));
-        bfont = new BitmapFont(Gdx.files.internal("score_font.fnt"), Gdx.files.internal("score_font.png"), false);
+
     }
     @Override
     public void show() {
@@ -48,7 +46,6 @@ public class GameOverScreen implements Screen {
 
         game.batch.begin();
         game.batch.draw(gameover, (mainmenu.width / 2) - (325 / 2), (mainmenu.height / 2) - (75 / 2));
-        bfont.draw(game.batch, Integer.toString(finalScore), (mainmenu.width / 2) , (mainmenu.height / 2));
         game.batch.end();
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.WHITE);

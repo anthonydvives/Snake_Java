@@ -3,15 +3,18 @@ package com.snake.java.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import java.awt.Rectangle;
 import java.util.LinkedList;
 
+import objects.Apple;
 import objects.Direction;
 import objects.Input;
 import objects.Snake;
@@ -29,6 +32,7 @@ public class GameScreen implements Screen {
     private int northBound;
     private int eastBound;
     private LinkedList<Snake> snake;
+    private Apple apple;
     private Input input;
 
     private int debug = 0;
@@ -40,8 +44,11 @@ public class GameScreen implements Screen {
 
     // Game Sound & Graphics
     private OrthographicCamera camera;
-    Texture grid;
-    ShapeRenderer shapeRenderer;
+    private Texture grid;
+    private ShapeRenderer shapeRenderer;
+    private BitmapFont bfont;
+    private Sound deathSound;
+    private Sound appleSpawnSound;
 
     // Implement pause to main menu: constructor requires the MainMenuScreen object as a parameter.
     public GameScreen(final SnakeGame game, MainMenuScreen mainmenu) {
@@ -58,8 +65,9 @@ public class GameScreen implements Screen {
         // Create Camera
         camera = new OrthographicCamera(mainmenu.width, mainmenu.height);
         camera.position.set(mainmenu.width / 2, mainmenu.height / 2, 0);
-        // Initialize Snake and Assets
+        // Initialize Graphics and Sounds
         shapeRenderer = new ShapeRenderer();
+        // Initialize Snake
         grid = new Texture(Gdx.files.internal("game_area.png"));
         snake = new LinkedList<Snake>();
         Snake head = new Snake((mainmenu.width / 2) - (sWidth / 2), (mainmenu.height / 2) - (sHeight / 2));
@@ -71,16 +79,16 @@ public class GameScreen implements Screen {
     public void detectCollision(){
         // Check if Snake goes past play area
         if(snake.getFirst().getXPos() > eastBound || snake.getFirst().getXPos() < westBound){
-            GameOverScreen gameover = new GameOverScreen(game, mainmenu, snake.size() - 1);
+            GameOverScreen gameover = new GameOverScreen(game, mainmenu);
             game.setScreen(gameover);
         }
         else if(snake.getFirst().getYPos() > northBound || snake.getFirst().getYPos() < southBound){
-            GameOverScreen gameover = new GameOverScreen(game, mainmenu, snake.size() - 1);
+            GameOverScreen gameover = new GameOverScreen(game, mainmenu);
             game.setScreen(gameover);
         }
         for(int i = 0; i < snake.size(); i++){
             if(i > 0 && (snake.getFirst().getXPos() == snake.get(i).getXPos() && snake.getFirst().getYPos() == snake.get(i).getYPos())){
-                GameOverScreen gameover = new GameOverScreen(game, mainmenu, snake.size() - 1);
+                GameOverScreen gameover = new GameOverScreen(game, mainmenu);
                 game.setScreen(gameover);
             }
         }
@@ -93,8 +101,11 @@ public class GameScreen implements Screen {
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
 
+        bfont = new BitmapFont(Gdx.files.internal("font.fnt"), Gdx.files.internal("font.png"), false);
+        System.out.println(mainmenu.width + " " + mainmenu.height);
         game.batch.begin();
         game.batch.draw(grid, (mainmenu.width / 2) - (550 / 2), (mainmenu.height / 2) - (410 / 2));
+        bfont.draw(game.batch, "Score: " + Integer.toString(snake.size() - 1), 20 , 460);
         game.batch.end();
 
         if(Gdx.input.isKeyPressed(com.badlogic.gdx.Input.Keys.V)) {
