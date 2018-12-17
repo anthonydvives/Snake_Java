@@ -1,7 +1,6 @@
 package com.snake.java.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -9,17 +8,17 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 
-import org.w3c.dom.css.Rect;
-
 import java.awt.Rectangle;
+
+import objects.State;
 
 public class MainMenuScreen implements Screen{
 
     final SnakeGame game;
-
+    public static int width = Gdx.graphics.getWidth();
+    public static int height = Gdx.graphics.getHeight();
     // Implement pause to main menu
     GameScreen gamescreen;
     AboutUs aboutUsScreen;

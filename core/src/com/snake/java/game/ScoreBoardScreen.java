@@ -12,6 +12,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import java.awt.Rectangle;
 
+import objects.State;
+
 public class ScoreBoardScreen implements Screen {
 
     final SnakeGame game;

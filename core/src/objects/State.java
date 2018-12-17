@@ -1,4 +1,4 @@
-package com.snake.java.game;
+package objects;
 
 public enum State {
     // Implement pause/resume
