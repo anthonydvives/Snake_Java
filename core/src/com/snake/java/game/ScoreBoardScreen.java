@@ -37,10 +37,10 @@ public class ScoreBoardScreen implements Screen {
     BitmapFont font;
 
     // Implement pause to main menu: constructor requires the MainMenuScreen object as a parameter.
-    public ScoreBoardScreen(final SnakeGame game, MainMenuScreen pmainmenu) {
+    public ScoreBoardScreen(final SnakeGame game, MainMenuScreen mainmenu) {
         this.game = game;
         // Implement pause to main menu
-        this.mainmenu = pmainmenu;
+        this.mainmenu = mainmenu;
 
         // create the camera and the SpriteBatch
         camera = new OrthographicCamera();

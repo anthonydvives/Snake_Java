@@ -19,15 +19,20 @@ public class Input extends Thread{
     public void processInput(){
 
         if(Gdx.input.isKeyPressed(com.badlogic.gdx.Input.Keys.P)){
-            //System.out.println("DIRECTION INITIAL");
             System.out.println("PRESSED");
+            while(Gdx.input.isKeyPressed(com.badlogic.gdx.Input.Keys.P)){
+                //System.out.println("Release the fucking key");
+            }
             if(isPaused == true){
+                System.out.println("UNPAUSED");
                 for(int i = 0; i < snake.size(); i++){
                     snake.get(i).setDirection(directionList.get(i));
+                    System.out.println(snake.get(i).getDirection());
                 }
                 isPaused = false;
             }
             else if(isPaused == false){
+                System.out.println("PAUSED");
                 for(int i = 0; i < snake.size(); i++){
                     directionList.add(snake.get(i).getDirection());
                     System.out.println(snake.get(i).getDirection());
@@ -40,7 +45,6 @@ public class Input extends Thread{
 
         }
         else if(Gdx.input.isKeyPressed(com.badlogic.gdx.Input.Keys.UP)){
-            //System.out.println("DIRECTION UP");
             if(snake.getFirst().getDirection() == Direction.DOWN){
                 return;
             }
@@ -49,7 +53,6 @@ public class Input extends Thread{
             }
         }
         else if(Gdx.input.isKeyPressed(com.badlogic.gdx.Input.Keys.DOWN)){
-            //System.out.println("DIRECTION DOWN");
             if(snake.getFirst().getDirection() == Direction.UP){
                 return;
             }
@@ -58,7 +61,6 @@ public class Input extends Thread{
             }
         }
         else if(Gdx.input.isKeyPressed(com.badlogic.gdx.Input.Keys.LEFT)){
-            //System.out.println("DIRECTION LEFT");
             if(snake.getFirst().getDirection() == Direction.RIGHT){
                 return;
             }
@@ -67,7 +69,6 @@ public class Input extends Thread{
             }
         }
         else if(Gdx.input.isKeyPressed(com.badlogic.gdx.Input.Keys.RIGHT)){
-            //System.out.println("DIRECTION RIGHT");
             if(snake.getFirst().getDirection() == Direction.LEFT){
                 return;
             }
@@ -75,7 +76,6 @@ public class Input extends Thread{
                 snake.getFirst().setDirection(Direction.RIGHT);
             }
         }
-        //currentDirection = Direction.INITIAL;
     }
     public void setSnake(LinkedList<Snake> snake){
         this.snake = snake;
@@ -83,7 +83,7 @@ public class Input extends Thread{
 
     @Override
     public void run() {
-        Timer timer = new Timer(20);
+        Timer timer = new Timer(500);
         timer.start();
         while(true){
             processInput();
@@ -102,11 +102,14 @@ public class Input extends Thread{
             }
         }
         public void processMovement(){
-
             for(int i = 0; i < snake.size(); i++){
+                if(snake.get(i).getDirection() == Direction.INITIAL){
+                    break;
+                }
+                // Store Original Position Coordinates
                 int tempX = snake.get(i).getXPos();
                 int tempY = snake.get(i).getYPos();
-                //Move body
+                // Move Snake Body
                 if(snake.get(i).getDirection() == Direction.UP){
                     snake.get(i).setYPos(tempY + 10);
                     if(i > 0 && (snake.get(i - 1).getXPos() > snake.get(i).getXPos())){
@@ -143,9 +146,6 @@ public class Input extends Thread{
                         snake.get(i).setDirection(Direction.DOWN);
                     }
                 }
-                //System.out.println(i + " " + snake.get(i).getDirection());
-                //snake.get(i).moveXPos();
-                //snake.get(i).moveYPos();
             }
         }
         public void run(){

@@ -62,10 +62,6 @@ public class MainMenuScreen implements Screen{
 */
     public MainMenuScreen(final SnakeGame game) {
         this.game = game;
-        gamescreen = new GameScreen(game, this);
-        aboutUsScreen = new AboutUs(game,this);
-        instructionScreen = new InstructionScreen(game,this);
-        scoreScreen = new ScoreBoardScreen(game,this);
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);
@@ -176,22 +172,27 @@ public class MainMenuScreen implements Screen{
             touchPos.set((float)Gdx.input.getX(),(float)Gdx.input.getY(),0.0F);
             camera.unproject(touchPos);
             if(normalSize.contains(touchPos.x,touchPos.y)){
+                gamescreen = new GameScreen(game, this);
                 gamescreen.setGameState(State.RUN);
                 game.setScreen(gamescreen);
                 dispose();
             }else if(hardSize.contains(touchPos.x,touchPos.y)){
+                gamescreen = new GameScreen(game, this);
                 gamescreen.setGameState(State.RUN);
                 game.setScreen(gamescreen);
                 dispose();
             }else if(aboutSize.contains(touchPos.x,touchPos.y)){
+                aboutUsScreen = new AboutUs(game,this);
                 aboutUsScreen.setGameState(State.RUN);
                 game.setScreen(aboutUsScreen);
                 dispose();
             }else if(instructionsSize.contains(touchPos.x,touchPos.y)){
+                instructionScreen = new InstructionScreen(game,this);
                 instructionScreen.setGameState(State.RUN);
                 game.setScreen(instructionScreen);
                 dispose();
             }else if(scoreSize.contains(touchPos.x,touchPos.y)){
+                scoreScreen = new ScoreBoardScreen(game,this);
                 scoreScreen.setGameState(State.RUN);
                 game.setScreen(scoreScreen);
                 dispose();

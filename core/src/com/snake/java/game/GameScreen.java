@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
+import java.awt.Rectangle;
 import java.util.LinkedList;
 
 import objects.Direction;
@@ -23,26 +24,22 @@ public class GameScreen implements Screen {
     // Game variables
     private int sWidth;
     private int sHeight;
-    private int gWidth;
-    private int gHeight;
     private int westBound;
     private int southBound;
     private int northBound;
     private int eastBound;
     private LinkedList<Snake> snake;
-    private long moveDelay;
-    private Direction currentState = Direction.INITIAL;
     private Input input;
 
     private int debug = 0;
     // Implement pause to main menu
-    MainMenuScreen mainmenu;
+    private MainMenuScreen mainmenu;
 
     // Implement pause/resume
     State state = State.RUN;
 
     // Game Sound & Graphics
-    OrthographicCamera camera;
+    private OrthographicCamera camera;
     Texture grid;
     ShapeRenderer shapeRenderer;
 
@@ -51,48 +48,53 @@ public class GameScreen implements Screen {
         this.game = game;
         // Implement pause to main menu
         this.mainmenu = mainmenu;
-        // Game Variables
+        // Snake Variables
         sWidth = 10;
         sHeight = 10;
-        gWidth = 550;
-        gHeight = 410;
-        westBound = (mainmenu.width - gWidth) / 2;
-        southBound = (mainmenu.height - gHeight) / 2;
-        northBound = mainmenu.height - ((mainmenu.height - gHeight) / 2) - 10;
-        eastBound = mainmenu.width - ((mainmenu.width - gWidth) / 2) - 10;
-        // create the camera and the SpriteBatch
+        westBound = (mainmenu.width - 550) / 2;
+        southBound = (mainmenu.height - 410) / 2;
+        northBound = mainmenu.height - ((mainmenu.height - 410) / 2) - 10;
+        eastBound = mainmenu.width - ((mainmenu.width - 550) / 2) - 10;
+        // Create Camera
         camera = new OrthographicCamera(mainmenu.width, mainmenu.height);
         camera.position.set(mainmenu.width / 2, mainmenu.height / 2, 0);
-        // Initialize Graphics & Sound
+        // Initialize Snake and Assets
         shapeRenderer = new ShapeRenderer();
         grid = new Texture(Gdx.files.internal("game_area.png"));
         snake = new LinkedList<Snake>();
+        Snake head = new Snake((mainmenu.width / 2) - (sWidth / 2), (mainmenu.height / 2) - (sHeight / 2));
+        snake.add(head);
+        // Initialize Input Controller
         input = new Input(snake);
         input.start();
-        Snake head = new Snake((mainmenu.width / 2) - (sWidth / 2), (mainmenu.height / 2) - (sHeight / 2));
-        System.out.println(((mainmenu.width / 2) - (sWidth / 2)) + " " + ((mainmenu.height / 2) - (sHeight / 2)));
-        snake.add(head);
+    }
+    public void detectCollision(){
+        // Check if Snake goes past play area
+        if(snake.getFirst().getXPos() > eastBound || snake.getFirst().getXPos() < westBound){
+            GameOverScreen gameover = new GameOverScreen(game, mainmenu, snake.size() - 1);
+            game.setScreen(gameover);
+        }
+        else if(snake.getFirst().getYPos() > northBound || snake.getFirst().getYPos() < southBound){
+            GameOverScreen gameover = new GameOverScreen(game, mainmenu, snake.size() - 1);
+            game.setScreen(gameover);
+        }
+        for(int i = 0; i < snake.size(); i++){
+            if(i > 0 && (snake.getFirst().getXPos() == snake.get(i).getXPos() && snake.getFirst().getYPos() == snake.get(i).getYPos())){
+                GameOverScreen gameover = new GameOverScreen(game, mainmenu, snake.size() - 1);
+                game.setScreen(gameover);
+            }
+        }
     }
     @Override
     public void render(float delta) {
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
         camera.update();
-
         game.batch.setProjectionMatrix(camera.combined);
 
-        // Implement pause/resume
-        if (Gdx.input.isKeyJustPressed(Keys.ESCAPE)) {
-            if (state == State.RUN) {
-                setGameState(State.PAUSE);
-                game.setScreen(mainmenu);
-            }
-        }
-
         game.batch.begin();
-        game.batch.draw(grid, (mainmenu.width / 2) - (gWidth / 2), (mainmenu.height / 2) - (gHeight / 2));
+        game.batch.draw(grid, (mainmenu.width / 2) - (550 / 2), (mainmenu.height / 2) - (410 / 2));
         game.batch.end();
 
         if(Gdx.input.isKeyPressed(com.badlogic.gdx.Input.Keys.V)) {
@@ -128,22 +130,12 @@ public class GameScreen implements Screen {
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.BLACK);
-        //shapeRenderer.rect(tempX, tempY, sWidth, sHeight);
 
         for(Snake s: snake){
-            //System.out.println(s.getXPos() + " " + s.getYPos() + "\n");
             shapeRenderer.rect(s.getXPos(), s.getYPos(), sWidth, sHeight);
         }
-
-
-
-        //System.out.println("PROCESSING INPUT");
-
-        //shapeRenderer.rect(westBound,southBound, sWidth, sHeight);
         shapeRenderer.end();
-
-        //System.out.println(width + " " + height);
-
+        detectCollision();
     }
     @Override
     public void resize(int width, int height) {
@@ -156,9 +148,11 @@ public class GameScreen implements Screen {
     }
     @Override
     public void pause() {
+        setGameState(State.PAUSE);
     }
     @Override
     public void resume() {
+        setGameState(State.RUN);
     }
     @Override
     public void dispose() {
