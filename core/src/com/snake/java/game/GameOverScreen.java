@@ -2,11 +2,10 @@ package com.snake.java.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import javax.xml.soap.Text;
@@ -19,7 +18,8 @@ public class GameOverScreen implements Screen {
     private ShapeRenderer shapeRenderer;
     // Game Variables
     private Texture gameover;
-    private boolean playDeathSound;
+    private Sound gameoverSound;
+    private boolean playGameoverSound;
 
 
     public GameOverScreen(final SnakeGame game, MainMenuScreen mainmenu){
@@ -32,7 +32,8 @@ public class GameOverScreen implements Screen {
         // Initialize Graphics
         shapeRenderer = new ShapeRenderer();
         gameover = new Texture(Gdx.files.internal("game_over.png"));
-
+        gameoverSound = Gdx.audio.newSound(Gdx.files.internal("game_over_sound.wav"));
+        playGameoverSound = true;
     }
     @Override
     public void show() {
@@ -47,12 +48,12 @@ public class GameOverScreen implements Screen {
         game.batch.begin();
         game.batch.draw(gameover, (mainmenu.width / 2) - (325 / 2), (mainmenu.height / 2) - (75 / 2));
         game.batch.end();
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(Color.WHITE);
 
-        //shapeRenderer.circle((mainmenu.width / 2) - (10 / 2), (mainmenu.height / 2) - (10 / 2) ,10);
+        if(playGameoverSound){
+            gameoverSound.play();
+            playGameoverSound = false;
+        }
 
-        shapeRenderer.end();
     }
     @Override
     public void resize(int width, int height) {

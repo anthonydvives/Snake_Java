@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import java.awt.Rectangle;
 import java.util.LinkedList;
+import java.util.Random;
 
 import objects.Apple;
 import objects.Direction;
@@ -67,6 +68,8 @@ public class GameScreen implements Screen {
         camera.position.set(mainmenu.width / 2, mainmenu.height / 2, 0);
         // Initialize Graphics and Sounds
         shapeRenderer = new ShapeRenderer();
+        appleSpawnSound = Gdx.audio.newSound(Gdx.files.internal("apple_spawn_sound.wav"));
+        deathSound = Gdx.audio.newSound(Gdx.files.internal("death_sound.wav"));
         // Initialize Snake
         grid = new Texture(Gdx.files.internal("game_area.png"));
         snake = new LinkedList<Snake>();
@@ -76,18 +79,26 @@ public class GameScreen implements Screen {
         input = new Input(snake);
         input.start();
     }
+    public void spawnApple(){
+        Random random = new Random();
+        random.nextInt();
+        apple = new Apple(100,100);
+    }
     public void detectCollision(){
         // Check if Snake goes past play area
         if(snake.getFirst().getXPos() > eastBound || snake.getFirst().getXPos() < westBound){
+            deathSound.play();
             GameOverScreen gameover = new GameOverScreen(game, mainmenu);
             game.setScreen(gameover);
         }
         else if(snake.getFirst().getYPos() > northBound || snake.getFirst().getYPos() < southBound){
+            deathSound.play();
             GameOverScreen gameover = new GameOverScreen(game, mainmenu);
             game.setScreen(gameover);
         }
         for(int i = 0; i < snake.size(); i++){
             if(i > 0 && (snake.getFirst().getXPos() == snake.get(i).getXPos() && snake.getFirst().getYPos() == snake.get(i).getYPos())){
+                deathSound.play();
                 GameOverScreen gameover = new GameOverScreen(game, mainmenu);
                 game.setScreen(gameover);
             }
