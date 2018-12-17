@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector3;
 
 import java.awt.Rectangle;
 
@@ -30,14 +31,17 @@ public class AboutUs implements Screen {
 
 
 
-    Texture backgroundImage;
-    Sprite backgroundSprite;
 
     Texture titleImage;
     Sprite titleSprite;
     Rectangle titleRec;
 
     BitmapFont font;
+
+    Texture arrowLeftImg;
+    Sprite arrowLeftSprite;
+    Rectangle arrow;
+
 
     // Implement pause to main menu: constructor requires the MainMenuScreen object as a parameter.
     public AboutUs(final SnakeGame game, MainMenuScreen mainmenu) {
@@ -46,28 +50,35 @@ public class AboutUs implements Screen {
         this.mainmenu = mainmenu;
 
         // create the camera and the SpriteBatch
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, 800, 480);
-
-        backgroundImage = new Texture(Gdx.files.internal("background.png"));
-        backgroundSprite = new Sprite(backgroundImage);
+        camera = new OrthographicCamera(this.mainmenu.width, this.mainmenu.height);
+        camera.position.set(this.mainmenu.width / 2, this.mainmenu.height / 2, 0);
 
         titleImage = new Texture(Gdx.files.internal("aboutustitle.png"));
         titleSprite = new Sprite(titleImage);
         titleRec = new Rectangle();
         titleRec.height = 64;
         titleRec.width = 512;
-        titleRec.x = 135;
+        titleRec.x = (this.mainmenu.width / 2) - (titleRec.width / 2);
         titleRec.y = 400;
 
+        arrowLeftImg = new Texture(Gdx.files.internal("arrowLeft.png"));
+
+        arrowLeftSprite = new Sprite(arrowLeftImg);
+
+        arrow = new Rectangle();
+        arrow.height = 32;
+        arrow.width = 32;
+        arrow.x = 50;
+        arrow.y = 50;
+
         font = new BitmapFont(Gdx.files.internal("font.fnt"),Gdx.files.internal("font.png"), false);
-        font.setColor(Color.BLACK);
-        font.getData().setScale(1.5f,1.5f);
+        font.setColor(Color.WHITE);
+        font.getData().setScale(1.25f,1.25f);
     }
     @Override
     public void render(float delta) {
 
-        Gdx.gl.glClearColor(0, 0, 0.2f, 1);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         // tell the camera to update its matrices.
@@ -98,14 +109,24 @@ public class AboutUs implements Screen {
 
         // begin a new batch and draw the bucket and all drops
         game.batch.begin();
-
-        game.batch.draw(backgroundSprite,0,0);
         game.batch.draw(titleSprite,titleRec.x,titleRec.y,titleRec.width,titleRec.height);
-        font.draw(game.batch, "Created by: ", 335, 375);
-        font.draw(game.batch,"Jonathan Dzialo",315,325);
-        font.draw(game.batch,"Anthony Vives",315,275);
-        font.draw(game.batch,"Jimmy Duong",315,225);
+        font.draw(game.batch, "Created by: ", 245, 375);
+        font.draw(game.batch,"Jonathan Dzialo",225,325);
+        font.draw(game.batch,"Anthony Vives",225,275);
+        font.draw(game.batch,"Jimmy Duong",225,225);
+
+        game.batch.draw(arrowLeftImg,arrow.x,arrow.y,arrow.width,arrow.height);
         game.batch.end();
+
+        if(Gdx.input.isTouched()) {
+            Vector3 touchPos = new Vector3();
+            touchPos.set((float) Gdx.input.getX(), (float) Gdx.input.getY(), 0.0F);
+            camera.unproject(touchPos);
+            if (arrow.contains(touchPos.x, touchPos.y)){
+                game.setScreen(mainmenu);
+                dispose();
+            }
+        }
     }
     @Override
     public void resize(int width, int height) {

@@ -185,7 +185,7 @@ public class GameScreen implements Screen {
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.RED);
-        System.out.println(apple.getXPos() + " " + apple.getYPos() + " " + snake.getFirst().getXPos() + " " + snake.getFirst().getYPos());
+
         shapeRenderer.rect(apple.getXPos(), apple.getYPos(), sWidth, sHeight);
         shapeRenderer.setColor(Color.BLACK);
 

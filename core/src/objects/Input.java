@@ -83,7 +83,7 @@ public class Input extends Thread{
 
     @Override
     public void run() {
-        Timer timer = new Timer(500);
+        Timer timer = new Timer(300);
         timer.start();
         while(true){
             processInput();
@@ -92,16 +92,25 @@ public class Input extends Thread{
     public class Timer extends Thread{
 
         private long delay;
+        private int size;
 
         public Timer(long delay){
             this.delay = delay;
+            size = snake.size();
         }
         public void decreaseDelay(){
-            if(snake.size() > 10 && (delay % 10 == 0)){
-                delay = delay - 20;
+            if(size < snake.size()){
+                size = snake.size();
+                if(delay <= 30){
+                }
+                else{
+                    delay -= 10;
+                }
+                System.out.println(delay);
             }
         }
         public void processMovement(){
+            decreaseDelay();
             for(int i = 0; i < snake.size(); i++){
                 if(snake.get(i).getDirection() == Direction.INITIAL){
                     break;
