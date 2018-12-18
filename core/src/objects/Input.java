@@ -83,7 +83,7 @@ public class Input extends Thread{
 
     @Override
     public void run() {
-        Timer timer = new Timer(300);
+        Timer timer = new Timer(200);
         timer.start();
         while(true){
             processInput();

@@ -79,7 +79,7 @@ public class GameScreen implements Screen {
         appleSpawnSound.play();
         // Initialize Input Controller
         input = new Input(snake);
-        input.start();
+        //input.start();
     }
     public void spawnApple(){
         Random random = new Random();

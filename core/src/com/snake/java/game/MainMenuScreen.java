@@ -17,89 +17,50 @@ import objects.State;
 public class MainMenuScreen implements Screen{
 
     final SnakeGame game;
+    // Transition Screens
+    private GameScreen gamescreen;
+    private AboutUs aboutUsScreen;
+    private InstructionScreen instructionScreen;
+    // Graphics
+    private OrthographicCamera camera;
+    private BitmapFont font;
 
-    // Implement pause to main menu
-    GameScreen gamescreen;
-    AboutUs aboutUsScreen;
-    InstructionScreen instructionScreen;
-    OrthographicCamera camera;
+    private Texture title;
 
+    private Texture start;
+    private Sprite startButton;
+    private Rectangle startHitBox;
 
-    BitmapFont font;
-    Texture startImg;
-    Sprite startSprite;
-    Rectangle startSize;
+    private Texture instructionsImg;
+    private Sprite instructionsSprite;
+    private Rectangle instructionsSize;
 
-    Texture titleImage;
-    Sprite titleSprite;
-    Rectangle titleSize;
-
-    Texture instructionsImg;
-    Sprite instructionsSprite;
-    Rectangle instructionsSize;
-
-    Texture aboutImg;
-    Sprite aboutSprite;
-    Rectangle aboutSize;
-
-    /*
-    Texture arrowLeftImg;
-    Sprite arrowLeftSprite;
-    Texture arrowRightImg;
-    Sprite arrowRightSprite;
-    Rectangle arrow;
-*/
+    private Texture aboutImg;
+    private Sprite aboutSprite;
+    private Rectangle aboutSize;
+    // Window Variables
     public static int width = Gdx.graphics.getWidth();
     public static int height = Gdx.graphics.getHeight();
+
     public MainMenuScreen(final SnakeGame game) {
         this.game = game;
-
+        // Initialize Camera
         camera = new OrthographicCamera(width, height);
         camera.position.set(width / 2, height / 2, 0);
+        // Initialize Graphics
+        title = new Texture(Gdx.files.internal("snake.png"));
 
+        start = new Texture(Gdx.files.internal("start_button.png"));
+        startButton = new Sprite(start);
+        startHitBox = new Rectangle((width / 2) - (191 / 2), 250,191,47);
 
-        titleImage = new Texture(Gdx.files.internal("title.png"));
-        titleSprite = new Sprite(titleImage);
-        titleSize = new Rectangle();
-        titleSize.height = 64;
-        titleSize.width = 256;
-        titleSize.x = (width / 2) - (titleSize.width / 2);;
-        titleSize.y = 275;
-
-        startImg = new Texture(Gdx.files.internal("start.png"));
-        startSprite = new Sprite(startImg);
-        startSize = new Rectangle();
-        startSize.height = 32;
-        startSize.width = 128;
-        startSize.x = (width / 2) - (startSize.width / 2);
-        startSize.y = (height/2);
-
-        instructionsImg = new Texture(Gdx.files.internal("instructionsScreen.png"));
+        instructionsImg = new Texture(Gdx.files.internal("instructions_button.png"));
         instructionsSprite = new Sprite(instructionsImg);
-        instructionsSize =  new Rectangle();
-        instructionsSize.height = 32;
-        instructionsSize.width = 256;
-        instructionsSize.x = (width / 2) - (instructionsSize.width / 2);
-        instructionsSize.y = 200;
+        instructionsSize =  new Rectangle((width / 2) - (471 / 2), 175, 471, 47);
 
-        aboutImg = new Texture(Gdx.files.internal("aboutUsScreen.png"));
+        aboutImg = new Texture(Gdx.files.internal("about_button.png"));
         aboutSprite = new Sprite(aboutImg);
-        aboutSize =  new Rectangle();
-        aboutSize.height = 32;
-        aboutSize.width = 256;
-        aboutSize.x = (width / 2) - (aboutSize.width / 2);
-        aboutSize.y = 150;
-/*
-        arrowLeftImg = new Texture(Gdx.files.internal("arrowLeft.png"));
-        arrowRightImg = new Texture(Gdx.files.internal("arrowRight.png"));
-
-        arrowLeftSprite = new Sprite(arrowLeftImg);
-        arrowRightSprite = new Sprite(arrowRightImg);
-
-        arrow = new Rectangle();
-        arrow.height = 32;
-        arrow.width = 32;
-*/
+        aboutSize =  new Rectangle((width / 2) - (311 / 2), 100,311,47);
 
         font = new BitmapFont(Gdx.files.internal("font.fnt"),Gdx.files.internal("font.png"), false);
         font.setColor(Color.BLACK);
@@ -114,77 +75,53 @@ public class MainMenuScreen implements Screen{
         game.batch.setProjectionMatrix(camera.combined);
 
         game.batch.begin();
-        //font.draw(game.batch, "Snake Java Edition", 250, 350);
-        game.batch.draw(startSprite,startSize.x,startSize.y,startSize.width,startSize.height);
-        game.batch.draw(titleSprite,titleSize.x,titleSize.y,titleSize.width,titleSize.height);
+        // Draw Title
+        game.batch.draw(title,(width / 2) - (191 / 2),400,191,47);
+        // Draw Start Button
+        game.batch.draw(startButton, startHitBox.x, startHitBox.y, startHitBox.width, startHitBox.height);
+        // Draw Instruction Button
         game.batch.draw(instructionsSprite,instructionsSize.x,instructionsSize.y,instructionsSize.width,instructionsSize.height);
+        // Draw About Button
         game.batch.draw(aboutSprite,aboutSize.x,aboutSize.y,aboutSize.width,aboutSize.height);
-/*
-        game.batch.draw(arrowLeftImg,275,175,arrow.width,arrow.height);
-        game.batch.draw(arrowRightImg,475,175,arrow.width,arrow.height);
-
-        if( Gdx.input.isKeyPressed(Input.Keys.LEFT)){
-            font.draw(game.batch, "Easy", 350, 200);
-        }
-*/
-        // font.draw(game.batch, "Normal", 250, 210);
-
-
-
-
         game.batch.end();
 
-
-        if(Gdx.input.isTouched())
-        {
+        if(Gdx.input.isTouched()) {
             Vector3 touchPos = new Vector3();
             touchPos.set((float)Gdx.input.getX(),(float)Gdx.input.getY(),0.0F);
             camera.unproject(touchPos);
-            if(startSize.contains(touchPos.x,touchPos.y)){
+            if(startHitBox.contains(touchPos.x,touchPos.y)){
                 gamescreen = new GameScreen(game, this);
                 gamescreen.setGameState(State.RUN);
                 game.setScreen(gamescreen);
                 dispose();
-            }else if(aboutSize.contains(touchPos.x,touchPos.y)){
+            }
+            else if(aboutSize.contains(touchPos.x,touchPos.y)){
                 aboutUsScreen = new AboutUs(game,this);
                 game.setScreen(aboutUsScreen);
                 dispose();
-            }else if(instructionsSize.contains(touchPos.x,touchPos.y)){
+            }
+            else if(instructionsSize.contains(touchPos.x,touchPos.y)){
                 instructionScreen = new InstructionScreen(game,this);
                 game.setScreen(instructionScreen);
                 dispose();
             }
-            //gamescreen.setGameState(State.RUN);
-            //game.setScreen(gamescreen);
-            //dispose();
         }
-        /*
-        if (Gdx.input.isTouched()) {
-            gamescreen.setGameState(State.RUN);
-            game.setScreen(gamescreen);
-            dispose();
-        }*/
     }
     @Override
     public void resize(int width, int height) {
     }
-
     @Override
     public void show() {
     }
-
     @Override
     public void hide() {
     }
-
     @Override
     public void pause() {
     }
-
     @Override
     public void resume() {
     }
-
     @Override
     public void dispose() {
     }
