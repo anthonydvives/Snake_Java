@@ -1,7 +1,6 @@
 package com.snake.java.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -12,8 +11,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector3;
 
 import java.awt.Rectangle;
-
-import objects.State;
 
 public class AboutUs implements Screen {
 
@@ -28,7 +25,7 @@ public class AboutUs implements Screen {
 
     private Texture title;
 
-    private BitmapFont font;
+    private BitmapFont bfont;
 
     private Texture back;
     private Sprite backButton;
@@ -48,9 +45,9 @@ public class AboutUs implements Screen {
         backButton = new Sprite(back);
         backHitBox = new Rectangle(50,50,50,50);
 
-        font = new BitmapFont(Gdx.files.internal("font.fnt"),Gdx.files.internal("font.png"), false);
-        font.setColor(Color.WHITE);
-        font.getData().setScale(1.25f,1.25f);
+        bfont = new BitmapFont(Gdx.files.internal("bfont.fnt"),Gdx.files.internal("bfont.png"), false);
+        bfont.setColor(Color.WHITE);
+        bfont.getData().setScale(1.25f,1.25f);
     }
     @Override
 
@@ -67,7 +64,10 @@ public class AboutUs implements Screen {
         // Draw Title
         game.batch.draw(title,50,400,311,47);
         // Draw Text
-
+        bfont.draw(game.batch, "Created by: ", 50, 375);
+        bfont.draw(game.batch,"Jonathan Dzialo",50,325);
+        bfont.draw(game.batch,"Anthony Vives",50,275);
+        bfont.draw(game.batch,"Jimmy Duong",50,225);
         // Draw Back Button
         game.batch.draw(back, backHitBox.x, backHitBox.y, backHitBox.width, backHitBox.height);
         game.batch.end();

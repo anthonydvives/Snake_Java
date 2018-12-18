@@ -8,43 +8,12 @@ import java.util.LinkedList;
 public class Input extends Thread{
 
     private LinkedList<Snake> snake;
-    private ArrayList<Direction> directionList;
-    private boolean isPaused;
 
     public Input(LinkedList<Snake> snake){
         this.snake = snake;
-        isPaused = false;
-        directionList = new ArrayList<Direction>();
     }
     public void processInput(){
-
-        if(Gdx.input.isKeyPressed(com.badlogic.gdx.Input.Keys.P)){
-            System.out.println("PRESSED");
-            while(Gdx.input.isKeyPressed(com.badlogic.gdx.Input.Keys.P)){
-                //System.out.println("Release the fucking key");
-            }
-            if(isPaused == true){
-                System.out.println("UNPAUSED");
-                for(int i = 0; i < snake.size(); i++){
-                    snake.get(i).setDirection(directionList.get(i));
-                    System.out.println(snake.get(i).getDirection());
-                }
-                isPaused = false;
-            }
-            else if(isPaused == false){
-                System.out.println("PAUSED");
-                for(int i = 0; i < snake.size(); i++){
-                    directionList.add(snake.get(i).getDirection());
-                    System.out.println(snake.get(i).getDirection());
-                }
-                for(Snake s: snake){
-                    s.setDirection(Direction.INITIAL);
-                }
-                isPaused = true;
-            }
-
-        }
-        else if(Gdx.input.isKeyPressed(com.badlogic.gdx.Input.Keys.UP)){
+        if(Gdx.input.isKeyPressed(com.badlogic.gdx.Input.Keys.UP)){
             if(snake.getFirst().getDirection() == Direction.DOWN){
                 return;
             }

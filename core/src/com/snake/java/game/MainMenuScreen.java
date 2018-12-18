@@ -23,7 +23,6 @@ public class MainMenuScreen implements Screen{
     private InstructionScreen instructionScreen;
     // Graphics
     private OrthographicCamera camera;
-    private BitmapFont font;
 
     private Texture title;
 
@@ -61,10 +60,6 @@ public class MainMenuScreen implements Screen{
         aboutImg = new Texture(Gdx.files.internal("about_button.png"));
         aboutSprite = new Sprite(aboutImg);
         aboutSize =  new Rectangle((width / 2) - (311 / 2), 100,311,47);
-
-        font = new BitmapFont(Gdx.files.internal("font.fnt"),Gdx.files.internal("font.png"), false);
-        font.setColor(Color.BLACK);
-        font.getData().setScale(2f,2f);
     }
     @Override
     public void render(float delta) {

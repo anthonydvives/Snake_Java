@@ -1,7 +1,6 @@
 package com.snake.java.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -13,8 +12,6 @@ import com.badlogic.gdx.math.Vector3;
 
 import java.awt.Rectangle;
 
-import objects.State;
-
 public class InstructionScreen implements Screen {
 
     final SnakeGame game;
@@ -24,7 +21,7 @@ public class InstructionScreen implements Screen {
     // Graphics
     private OrthographicCamera camera;
 
-    private BitmapFont font;
+    private BitmapFont bfont;
     private Texture title;
     private Texture back;
     private Sprite backButton;
@@ -45,9 +42,9 @@ public class InstructionScreen implements Screen {
         backButton = new Sprite(back);
         backHitBox = new Rectangle(50,50,50,50);
 
-        font = new BitmapFont(Gdx.files.internal("font.fnt"),Gdx.files.internal("font.png"), false);
-        font.setColor(Color.WHITE);
-        font.getData().setScale(1.25f,1.25f);
+        bfont = new BitmapFont(Gdx.files.internal("bfont.fnt"),Gdx.files.internal("bfont.png"), false);
+        bfont.setColor(Color.WHITE);
+        bfont.getData().setScale(1.25f,1.25f);
     }
     @Override
     public void render(float delta) {
@@ -62,10 +59,10 @@ public class InstructionScreen implements Screen {
         // Draw Title
         game.batch.draw(title,50, 400,417,47);
         // Draw Text
-        font.draw(game.batch, "1. Use the directional keys to move the snake in" + "\n" + "    different directions", 50, 375);
-        font.draw(game.batch,"2. Collect items on the floor to gain points",50,325);
-        font.draw(game.batch,"3. Each time an item is collected, the snake will" + "\n" + "    increase in size",50,275);
-        font.draw(game.batch,"4. Only one attempt",50,225);
+        bfont.draw(game.batch, "1. Use the directional keys to move the snake in" + "\n" + "    different directions", 50, 375);
+        bfont.draw(game.batch,"2. Collect items on the floor to gain points",50,325);
+        bfont.draw(game.batch,"3. Each time an item is collected, the snake will" + "\n" + "    increase in size",50,275);
+        bfont.draw(game.batch,"4. Only one attempt",50,225);
         // Draw Back Button
         game.batch.draw(backButton, backHitBox.x, backHitBox.y, backHitBox.width, backHitBox.height);
         game.batch.end();

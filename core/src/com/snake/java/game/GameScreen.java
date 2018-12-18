@@ -1,7 +1,6 @@
 package com.snake.java.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
@@ -11,7 +10,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
-import java.awt.Rectangle;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -41,7 +39,7 @@ public class GameScreen implements Screen {
     private MainMenuScreen mainmenu;
 
     // Implement pause/resume
-    State state = State.RUN;
+    private State state = State.RUN;
 
     // Game Sound & Graphics
     private OrthographicCamera camera;
@@ -79,7 +77,7 @@ public class GameScreen implements Screen {
         appleSpawnSound.play();
         // Initialize Input Controller
         input = new Input(snake);
-        //input.start();
+        input.start();
     }
     public void spawnApple(){
         Random random = new Random();
@@ -130,7 +128,6 @@ public class GameScreen implements Screen {
                 snake.add(body);
             }
             else if (snake.getFirst().getDirection() == Direction.UP) {
-                //System.out.println("Up");
                 body = new Snake(snake.getLast().getXPos(), snake.getLast().getYPos() - 10);
                 body.setDirection(snake.getLast().getDirection());
                 snake.add(body);
@@ -176,13 +173,6 @@ public class GameScreen implements Screen {
         bfont.draw(game.batch, "Score: " + Integer.toString(snake.size() - 1), 20 , 460);
         game.batch.end();
 
-        if(Gdx.input.isKeyPressed(com.badlogic.gdx.Input.Keys.V) && debug < 1) {
-            //System.out.println(debug);
-            Snake body;
-            debug++;
-            spawnApple();
-        }
-
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.RED);
 
@@ -214,7 +204,9 @@ public class GameScreen implements Screen {
     }
     @Override
     public void dispose() {
-
+        grid.dispose();
+        appleSpawnSound.dispose();
+        deathSound.dispose();
     }
     // Implement pause/resume
     public void setGameState(State s) {
