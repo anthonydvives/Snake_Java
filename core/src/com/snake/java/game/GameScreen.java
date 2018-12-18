@@ -2,6 +2,7 @@ package com.snake.java.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -48,6 +49,7 @@ public class GameScreen implements Screen {
     private BitmapFont bfont;
     private Sound deathSound;
     private Sound appleSpawnSound;
+    private Music bgm;
 
     // Implement pause to main menu: constructor requires the MainMenuScreen object as a parameter.
     public GameScreen(final SnakeGame game, MainMenuScreen mainmenu) {
@@ -64,17 +66,19 @@ public class GameScreen implements Screen {
         // Create Camera
         camera = new OrthographicCamera(mainmenu.width, mainmenu.height);
         camera.position.set(mainmenu.width / 2, mainmenu.height / 2, 0);
-        // Initialize Graphics and Sounds
+        // Initialize Graphics and Audio
         shapeRenderer = new ShapeRenderer();
         appleSpawnSound = Gdx.audio.newSound(Gdx.files.internal("apple_spawn_sound.wav"));
         deathSound = Gdx.audio.newSound(Gdx.files.internal("death_sound.wav"));
+        bgm = Gdx.audio.newMusic(Gdx.files.internal("bgm.mp3"));
+        bgm.setLooping(true);
         // Initialize Snake & Apple
         grid = new Texture(Gdx.files.internal("game_area.png"));
         snake = new LinkedList<Snake>();
         Snake head = new Snake((mainmenu.width / 2) - (sWidth / 2), (mainmenu.height / 2) - (sHeight / 2));
         snake.add(head);
         spawnApple();
-        appleSpawnSound.play();
+        bgm.play();
         // Initialize Input Controller
         input = new Input(snake);
         input.start();
@@ -87,14 +91,14 @@ public class GameScreen implements Screen {
         while(true){
             appleX = random.nextInt(eastBound - westBound + 1) + westBound - 10;
             appleY = random.nextInt(northBound - southBound + 1) + southBound - 10;
-            appleX = ((appleX + 5) / 10) * 10;
-            appleY = ((appleY + 5) / 10) * 10;
+            appleX = (((appleX + 5) / 10) * 10) + 5;
+            appleY = (((appleY + 5) / 10) * 10) + 5;
             if(validApple(appleX,appleY)){
                 break;
             }
         }
-        //System.out.println(appleX + " " + appleY);
-        apple = new Apple(appleX + 5,appleY + 5);
+        appleSpawnSound.play();
+        apple = new Apple(appleX, appleY);
     }
     public boolean validApple(int xPos, int yPos){
         boolean valid = false;
@@ -109,17 +113,21 @@ public class GameScreen implements Screen {
         return valid;
     }
     public void detectCollision(){
-        // Check if Snake goes past play area
+        // Check Snake X Coordinates Versus X Axis Borders
         if(snake.getFirst().getXPos() > eastBound || snake.getFirst().getXPos() < westBound){
+            bgm.stop();
             deathSound.play();
             GameOverScreen gameover = new GameOverScreen(game, mainmenu);
             game.setScreen(gameover);
         }
+        // Check Snake Y Coordinates Versus Y Axis Borders
         else if(snake.getFirst().getYPos() > northBound || snake.getFirst().getYPos() < southBound){
+            bgm.stop();
             deathSound.play();
             GameOverScreen gameover = new GameOverScreen(game, mainmenu);
             game.setScreen(gameover);
         }
+        // Check Snake X & Y Coordinates Versus Apple X & Y Coordinates
         else if(snake.getFirst().getXPos() == apple.getXPos() && snake.getFirst().getYPos() == apple.getYPos()){
             Snake body;
             if(snake.getFirst().getDirection() == Direction.INITIAL){
@@ -147,12 +155,15 @@ public class GameScreen implements Screen {
                 body.setDirection(snake.getLast().getDirection());
                 snake.add(body);
             }
+            // Spawn New Apple if Snake Head Eats Apple
             spawnApple();
             appleSpawnSound.play();
         }
+        // Check Snake X & Y Coordinates Versus Snake Body X & Y Corrdinates
         for(int i = 0; i < snake.size(); i++){
             if(i > 0 && (snake.getFirst().getXPos() == snake.get(i).getXPos() && snake.getFirst().getYPos() == snake.get(i).getYPos())){
                 deathSound.play();
+                bgm.stop();
                 GameOverScreen gameover = new GameOverScreen(game, mainmenu);
                 game.setScreen(gameover);
             }
@@ -160,29 +171,30 @@ public class GameScreen implements Screen {
     }
     @Override
     public void render(float delta) {
-
+        // Set Background & Camera
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
-
+        // Initialize BitmapFont
         bfont = new BitmapFont(Gdx.files.internal("font.fnt"), Gdx.files.internal("font.png"), false);
-
+        // Spritebatch
         game.batch.begin();
         game.batch.draw(grid, (mainmenu.width / 2) - (550 / 2), (mainmenu.height / 2) - (410 / 2));
+        // Draw Score
         bfont.draw(game.batch, "Score: " + Integer.toString(snake.size() - 1), 20 , 460);
         game.batch.end();
-
+        //ShapeRenderer Draws Snake & Apple
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.RED);
-
         shapeRenderer.rect(apple.getXPos(), apple.getYPos(), sWidth, sHeight);
         shapeRenderer.setColor(Color.BLACK);
-
+        // For Each Snake in LinkedList Render a Snake
         for(Snake s: snake){
             shapeRenderer.rect(s.getXPos(), s.getYPos(), sWidth, sHeight);
         }
         shapeRenderer.end();
+        // Check Snake for Collision
         detectCollision();
     }
     @Override

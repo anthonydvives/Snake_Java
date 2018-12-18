@@ -1,7 +1,9 @@
 package objects;
 
 public class Apple {
+    // Apple X Coordinate
     private int xPos;
+    // Apply Y Coordinate
     private int yPos;
     public Apple(int xPos, int yPos){
         this.xPos = xPos;

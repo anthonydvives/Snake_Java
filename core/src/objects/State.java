@@ -1,6 +1,6 @@
 package objects;
 
 public enum State {
-    // Implement pause/resume
+    // State Of System
     RUN, PAUSE
 }

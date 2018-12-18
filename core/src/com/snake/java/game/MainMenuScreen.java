@@ -2,11 +2,9 @@ package com.snake.java.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector3;
 
@@ -30,13 +28,13 @@ public class MainMenuScreen implements Screen{
     private Sprite startButton;
     private Rectangle startHitBox;
 
-    private Texture instructionsImg;
-    private Sprite instructionsSprite;
-    private Rectangle instructionsSize;
+    private Texture instruction;
+    private Sprite instructionButton;
+    private Rectangle instructionHitBox;
 
-    private Texture aboutImg;
-    private Sprite aboutSprite;
-    private Rectangle aboutSize;
+    private Texture about;
+    private Sprite aboutButton;
+    private Rectangle aboutHitBox;
     // Window Variables
     public static int width = Gdx.graphics.getWidth();
     public static int height = Gdx.graphics.getHeight();
@@ -53,33 +51,16 @@ public class MainMenuScreen implements Screen{
         startButton = new Sprite(start);
         startHitBox = new Rectangle((width / 2) - (191 / 2), 250,191,47);
 
-        instructionsImg = new Texture(Gdx.files.internal("instructions_button.png"));
-        instructionsSprite = new Sprite(instructionsImg);
-        instructionsSize =  new Rectangle((width / 2) - (471 / 2), 175, 471, 47);
+        instruction = new Texture(Gdx.files.internal("instructions_button.png"));
+        instructionButton = new Sprite(instruction);
+        instructionHitBox =  new Rectangle((width / 2) - (471 / 2), 175, 471, 47);
 
-        aboutImg = new Texture(Gdx.files.internal("about_button.png"));
-        aboutSprite = new Sprite(aboutImg);
-        aboutSize =  new Rectangle((width / 2) - (311 / 2), 100,311,47);
+        about = new Texture(Gdx.files.internal("about_button.png"));
+        aboutButton = new Sprite(about);
+        aboutHitBox =  new Rectangle((width / 2) - (311 / 2), 100,287,47);
     }
-    @Override
-    public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        camera.update();
-        game.batch.setProjectionMatrix(camera.combined);
-
-        game.batch.begin();
-        // Draw Title
-        game.batch.draw(title,(width / 2) - (191 / 2),400,191,47);
-        // Draw Start Button
-        game.batch.draw(startButton, startHitBox.x, startHitBox.y, startHitBox.width, startHitBox.height);
-        // Draw Instruction Button
-        game.batch.draw(instructionsSprite,instructionsSize.x,instructionsSize.y,instructionsSize.width,instructionsSize.height);
-        // Draw About Button
-        game.batch.draw(aboutSprite,aboutSize.x,aboutSize.y,aboutSize.width,aboutSize.height);
-        game.batch.end();
-
+    public void detectClick(){
+        // Check Coordinates of a Mouse Click
         if(Gdx.input.isTouched()) {
             Vector3 touchPos = new Vector3();
             touchPos.set((float)Gdx.input.getX(),(float)Gdx.input.getY(),0.0F);
@@ -90,17 +71,38 @@ public class MainMenuScreen implements Screen{
                 game.setScreen(gamescreen);
                 dispose();
             }
-            else if(aboutSize.contains(touchPos.x,touchPos.y)){
+            else if(aboutHitBox.contains(touchPos.x,touchPos.y)){
                 aboutUsScreen = new AboutUs(game,this);
                 game.setScreen(aboutUsScreen);
                 dispose();
             }
-            else if(instructionsSize.contains(touchPos.x,touchPos.y)){
+            else if(instructionHitBox.contains(touchPos.x,touchPos.y)){
                 instructionScreen = new InstructionScreen(game,this);
                 game.setScreen(instructionScreen);
                 dispose();
             }
         }
+    }
+    @Override
+    public void render(float delta) {
+        // Set Background & Camera
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        camera.update();
+        game.batch.setProjectionMatrix(camera.combined);
+        // Spritebatch
+        game.batch.begin();
+        // Draw Title
+        game.batch.draw(title,(width / 2) - (191 / 2),400,191,47);
+        // Draw Start Button
+        game.batch.draw(startButton, startHitBox.x, startHitBox.y, startHitBox.width, startHitBox.height);
+        // Draw Instruction Button
+        game.batch.draw(instructionButton, instructionHitBox.x, instructionHitBox.y, instructionHitBox.width, instructionHitBox.height);
+        // Draw About Button
+        game.batch.draw(aboutButton, aboutHitBox.x, aboutHitBox.y, aboutHitBox.width, aboutHitBox.height);
+        game.batch.end();
+        //Check Click Event
+        detectClick();
     }
     @Override
     public void resize(int width, int height) {

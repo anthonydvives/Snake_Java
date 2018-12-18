@@ -6,9 +6,11 @@ import com.badlogic.gdx.math.Rectangle;
 import java.util.LinkedList;
 
 public class Snake{
-
+    // X Coordinate for Snake
     private int xPos;
+    // Y Coordinate for Snake
     private int yPos;
+    // Direction for Snake
     private Direction currentDirection;
 
     public Snake(int xPos, int yPos) {

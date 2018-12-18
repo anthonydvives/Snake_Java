@@ -2,7 +2,6 @@ package objects;
 
 import com.badlogic.gdx.Gdx;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class Input extends Thread{
@@ -52,22 +51,25 @@ public class Input extends Thread{
 
     @Override
     public void run() {
-        Timer timer = new Timer(200);
+        // Start Delayed Snake Movement
+        DelayedMovement timer = new DelayedMovement(200);
         timer.start();
         while(true){
+            // Always Check For Input
             processInput();
         }
     }
-    public class Timer extends Thread{
+    public class DelayedMovement extends Thread{
 
         private long delay;
         private int size;
 
-        public Timer(long delay){
+        public DelayedMovement(long delay){
             this.delay = delay;
             size = snake.size();
         }
         public void decreaseDelay(){
+            // After Each Eaten Apple, Decrease Movement Delay
             if(size < snake.size()){
                 size = snake.size();
                 if(delay <= 30){
@@ -127,6 +129,7 @@ public class Input extends Thread{
             }
         }
         public void run(){
+            // Continue to Process Snake Movement
             try{
                 while(true){
                     processMovement();
